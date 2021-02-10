@@ -1,7 +1,5 @@
 ﻿using System.IO;
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
 public class JsonWatcher : MonoBehaviour
 {
@@ -50,7 +48,6 @@ public class JsonWatcher : MonoBehaviour
     {
         if (changed)
         {
-            // Do something here…
             dynamicTableGenerator.CreateTable();
             changed = false;
         }
@@ -61,5 +58,8 @@ public class JsonWatcher : MonoBehaviour
     {
         changed = true;
     }
-
+    
 }
+
+// SRC
+// https://stackoverflow.com/questions/56672064/unity-with-filesystemwatcher

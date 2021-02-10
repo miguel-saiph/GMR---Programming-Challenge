@@ -24,27 +24,30 @@ public class DynamicTableGenerator : MonoBehaviour
     public void CreateTable() {
 
         DeleteTable();
+
+        // The full path of the json
         string filePath = path + "/" + fileName;
-        string dataAsJson = File.ReadAllText (filePath);
-        itemData = JsonMapper.ToObject(dataAsJson);
+        
+        // Read the json as string
+        string jsonString = File.ReadAllText (filePath);
 
-        JsonObject data = JsonUtility.FromJson<JsonObject>(dataAsJson);
+        // Parse json to JsonData
+        itemData = JsonMapper.ToObject(jsonString);
 
-        titleText.text = data.Title;
+        //JsonObject data = JsonUtility.FromJson<JsonObject>(jsonString);
 
-        for (int i = 0; i < data.ColumnHeaders.Length; i++) {   
-            //Debug.Log(data.ColumnHeaders[i]);
-            CreateColumnHeader(data.ColumnHeaders[i]);
+        // Set title
+        titleText.text = itemData[0].ToString();
+
+        // Set headers
+        for (int i = 0; i < itemData[1].Count; i++) {
+            CreateColumnHeader(itemData[1][i].ToString());
         }
 
-        Debug.Log(itemData[2].Count);
+        // Set rows
         for (int i = 0; i < itemData[2].Count; i++){
             CreateRow(itemData[2][i]);
         }
-        
-        //string json = JsonUtility.ToJson(data.Data[0]);
-        //JsonData member = JsonMapper.ToObject(data.Data[0]);
-        string json = JsonUtility.ToJson(data.Data);
     }
 
     private void DeleteTable() {
@@ -83,25 +86,27 @@ public class DynamicTableGenerator : MonoBehaviour
         // Creates the row parent
         GameObject row = new GameObject("Row", typeof(HorizontalLayoutGroup));
         row.transform.SetParent(rowSpace, false);
+
+        // Row adjustments
         row.GetComponent<RectTransform>().sizeDelta = new Vector2(550, 60);
         row.GetComponent<HorizontalLayoutGroup>().childControlWidth = false;
         row.GetComponent<HorizontalLayoutGroup>().childControlHeight = false;
+        row.GetComponent<HorizontalLayoutGroup>().spacing = 15;
 
+        // Creates row content
         for (int i = 0; i < data.Count; i++) {
-            GameObject dataColumn = new GameObject("DataColumn", typeof(Text));
-            dataColumn.transform.SetParent(row.transform, false);
+            GameObject dataRow = new GameObject("DataColumn", typeof(Text));
+            dataRow.transform.SetParent(row.transform, false);
 
-            // Set the name of the column
-            Text dataText = dataColumn.GetComponent<Text>();
-            dataText.text = data[i].ToString();
+            Text dataText = dataRow.GetComponent<Text>();
+            dataText.text =  data[i].ToString();
 
-            // Set the style of the text
+            // Set the style of text
             dataText.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 60);
             dataText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
             dataText.fontSize = 18;
             dataText.alignment = TextAnchor.MiddleCenter;
             dataText.color = new Color(0.1960784f, 0.1960784f, 0.1960784f);
         }
-        
     }
 }
